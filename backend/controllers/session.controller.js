@@ -51,7 +51,7 @@ const getMySessions = async (req, res) => {
 
 const getSessionsById = async (req, res) => {
   try {
-    const session = await Session.find({ user: req.user.id })
+    const session = await Session.findById(req.params.id)
       .populate({
         path: "questions",
         options: { sort: { isPinned: -1, createdAt: 1 } },
@@ -70,7 +70,31 @@ const getSessionsById = async (req, res) => {
   }
 }
 
-const deleteSession = async (req, res) => {}
+const deleteSession = async (req, res) => {
+  try {
+    const session = await Session.findById(req.params.id)
+
+    if (!session) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Session not found" })
+    }
+
+    if (session.user.toString() !== req.user.id) {
+      return res
+        .status(401)
+        .json({ message: "Not authorized to delete this session" })
+    }
+
+    await Question.deleteMany({ session: session._id })
+
+    await session.deleteOne()
+
+    res.status(200).json({ message: "Session deleted successfully" })
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server Error" })
+  }
+}
 
 module.exports = {
   createSession,
