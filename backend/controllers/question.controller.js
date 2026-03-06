@@ -38,7 +38,27 @@ const addQuestionsToSession = async (req, res) => {
   }
 }
 
-const togglePinQuestion = async (req, res) => {}
+const togglePinQuestion = async (req, res) => {
+  try {
+    const question = await Question.findById(req.params.id)
+
+    if (!question) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Question not found" })
+    }
+
+    question.isPinned = !question.isPinned
+
+    await question.save()
+
+    res.status(200).json({ success: true, question })
+  } catch (error) {
+    console.log(error)
+
+    res.status(500).json({ success: false, message: "Server Error" })
+  }
+}
 
 const updateQuestionNote = async (req, res) => {}
 
