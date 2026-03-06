@@ -60,7 +60,29 @@ const togglePinQuestion = async (req, res) => {
   }
 }
 
-const updateQuestionNote = async (req, res) => {}
+const updateQuestionNote = async (req, res) => {
+  try {
+    const { note } = req.body
+
+    const question = await Question.findById(req.params.id)
+
+    if (!question) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Question not found" })
+    }
+
+    question.note = note || ""
+
+    await question.save()
+
+    res.status(200).json({ success: true, question })
+  } catch (error) {
+    console.log(error)
+
+    res.status(500).json({ success: false, message: "Server Error" })
+  }
+}
 
 module.exports = {
   addQuestionsToSession,
