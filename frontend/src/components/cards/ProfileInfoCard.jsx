@@ -13,26 +13,28 @@ const ProfileInfoCard = () => {
   }
 
   return (
-    <div className="flex items-center">
-      <img
-        src={user.profileImageUrl}
-        alt="Profile pic"
-        className="w-12 h-12 bg-gray-300 rounded-full mr3"
-      />
+    user && (
+      <div className="flex items-center">
+        <img
+          src={user.profileImageUrl}
+          alt="Profile pic"
+          className="w-12 h-12 bg-gray-300 rounded-full mr3"
+        />
 
-      <div className="ml-2">
-        <div className="text-xl text-black font-bold leading-3">
-          {user.name || ""}
+        <div className="ml-2">
+          <div className="text-xl text-black font-bold leading-3">
+            {user.name || ""}
+          </div>
+
+          <button
+            className="text-amber-600 text-lg font-semibold cursor-pointer hover:underline"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
         </div>
-
-        <button
-          className="text-amber-600 text-lg font-semibold cursor-pointer hover:underline"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
       </div>
-    </div>
+    )
   )
 }
 
