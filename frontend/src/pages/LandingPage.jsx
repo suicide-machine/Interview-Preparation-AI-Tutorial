@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import {
   LuBrain,
@@ -13,14 +13,23 @@ import { APP_FEATURE } from "../utils/data"
 import Modal from "../components/Modal"
 import Login from "./auth/Login"
 import SignUp from "./auth/SignUp"
+import { UserContext } from "../context/UserContext"
+import ProfileInfoCard from "../components/cards/ProfileInfoCard"
 
 const LandingPage = () => {
+  const { user } = useContext(UserContext)
   const navigate = useNavigate()
 
   const [openAuthModal, setOpenAuthModal] = useState(false)
   const [currentPage, setCurrentPage] = useState("login")
 
-  const handleCTA = () => {}
+  const handleCTA = () => {
+    if (!user) {
+      setOpenAuthModal(true)
+    } else {
+      navigate("/dashboard")
+    }
+  }
 
   const featureIcons = [LuZap, LuTarget, LuBrain, LuTrendingUp, LuUsers]
 
@@ -48,17 +57,21 @@ const LandingPage = () => {
               </div>
             </div>
 
-            <button
-              className="group bg-linear-to-r from-[#FF9324] via-[#F9A83A] to-[#FCD760] text-sm font-semibold text-white px-8 py-3 rounded-full hover:shadow-lg hover:shadow-amber-200/50 transition-all duration-300 cursor-pointer hover:scale-[1.02] relative overflow-hidden"
-              onClick={() => setOpenAuthModal(true)}
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                Get Started Free
-                <LuChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </span>
+            {user ? (
+              <ProfileInfoCard />
+            ) : (
+              <button
+                className="group bg-linear-to-r from-[#FF9324] via-[#F9A83A] to-[#FCD760] text-sm font-semibold text-white px-8 py-3 rounded-full hover:shadow-lg hover:shadow-amber-200/50 transition-all duration-300 cursor-pointer hover:scale-[1.02] relative overflow-hidden"
+                onClick={() => setOpenAuthModal(true)}
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  Get Started Free
+                  <LuChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </span>
 
-              <div className="absolute inset-0 bg-linear-to-r from-amber-600 to-amber-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </button>
+                <div className="absolute inset-0 bg-linear-to-r from-amber-600 to-amber-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </button>
+            )}
           </header>
 
           {/* Hero Content */}
