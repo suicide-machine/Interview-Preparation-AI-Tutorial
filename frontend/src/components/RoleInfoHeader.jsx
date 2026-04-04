@@ -10,7 +10,7 @@ const RoleInfoHeader = ({
 }) => {
   return (
     <div className="relative bg-white border-b border-gray-100">
-      <div className="conatiner mx-auto px-10 md:px-0">
+      <div className="conatiner mx-auto px-10 ">
         <div className="h-60 flex flex-col justify-center relative z-10 ">
           <div className="flex items-start">
             <div className="grow">
