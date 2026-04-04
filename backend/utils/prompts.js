@@ -21,7 +21,7 @@ TECHNICAL INTERVIEW QUESTION GENERATOR
 
 ROLE: ${role}
 EXPERIENCE: ${experience} years (${experienceLevel} Level)
-TOPICS: ${topicsToFocus.join(", ")}
+TOPICS: ${topicsToFocus}
 NUMBER OF QUESTIONS: ${numberOfQuestions}
 DIFFICULTY DISTRIBUTION: ${difficultyDistribution}
 
@@ -30,7 +30,7 @@ TASK
 ===========================================
 Generate ${numberOfQuestions} technical interview questions for a ${role} 
 position with ${experience} years of experience, focusing on:
-${topicsToFocus.map((topic) => `  • ${topic}`).join("\n")}
+${topicsToFocus}
 
 ===========================================
 REQUIREMENTS
