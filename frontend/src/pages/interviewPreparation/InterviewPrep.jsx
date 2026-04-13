@@ -36,7 +36,19 @@ const InterviewPrep = () => {
 
   const generateConceptExplanation = async (question) => {}
 
-  const toggleQuestionPinStatus = async (questionId) => {}
+  const toggleQuestionPinStatus = async (questionId) => {
+    try {
+      const response = await axiosInstance.post(
+        API_PATHS.QUESTION.PIN(questionId),
+      )
+
+      if (response.data && response.data.question) {
+        fetchSessionDetailsById()
+      }
+    } catch (error) {
+      console.log("error: ", error)
+    }
+  }
 
   const uploadMoreQuestions = async () => {}
 
