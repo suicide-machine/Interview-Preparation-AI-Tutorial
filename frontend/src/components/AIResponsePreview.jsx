@@ -2,8 +2,9 @@ import React, { useState } from "react"
 import remarkGfm from "remark-gfm"
 import ReactMarkdown from "react-markdown"
 import { LuCheck, LuCode, LuCopy } from "react-icons/lu"
-import SyntaxHighlighter from "react-syntax-highlighter"
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism"
+import rehypeRaw from "rehype-raw"
 
 const AIResponsePreview = ({ content }) => {
   if (!content) return null
@@ -12,7 +13,7 @@ const AIResponsePreview = ({ content }) => {
     <div className="max-w-4xl mx-auto">
       <div className="text-lg max-w-none">
         <ReactMarkdown
-          rehypePlugins={[remarkGfm]}
+          rehypePlugins={[remarkGfm, rehypeRaw]}
           components={{
             code({ node, className, children, ...props }) {
               const match = /language-(\w+)/.exec(className || "")
