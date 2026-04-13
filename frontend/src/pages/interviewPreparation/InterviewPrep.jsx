@@ -8,9 +8,11 @@ import { API_PATHS } from "../../utils/apiPaths"
 import { AnimatePresence, motion } from "framer-motion"
 import QuestionCard from "../../components/cards/QuestionCard"
 import Drawer from "../../components/Drawer"
-import { LuCircleAlert } from "react-icons/lu"
+import { LuCircleAlert, LuListCollapse } from "react-icons/lu"
 import AIResponsePreview from "../../components/AIResponsePreview"
 import SkeletonLoader from "../../components/loader/SkeletonLoader"
+import toast from "react-hot-toast"
+import { FaSpinner } from "react-icons/fa"
 
 const InterviewPrep = () => {
   const { sessionId } = useParams()
@@ -80,7 +82,44 @@ const InterviewPrep = () => {
     }
   }
 
-  const uploadMoreQuestions = async () => {}
+  const uploadMoreQuestions = async () => {
+    try {
+      setIsUpdateLoader(true)
+
+      const aiResponse = await axiosInstance.post(
+        API_PATHS.AI.GENERATE_QUESTION,
+        {
+          role: sessionData?.role,
+          experience: sessionData?.experience,
+          topicsToFocus: sessionData?.topicsToFocus,
+          numberOfQuestions: 10,
+        },
+      )
+
+      const generatedQuestions = aiResponse.data
+
+      const response = await axiosInstance.post(
+        API_PATHS.QUESTION.ADD_TO_SESSION,
+        {
+          sessionId,
+          questions: generatedQuestions,
+        },
+      )
+
+      if (response.data) {
+        toast.success("Added more Q&A!")
+        fetchSessionDetailsById()
+      }
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        setErrorMsg(error.response.data.message)
+      } else {
+        setErrorMsg("Something went wrong. Please try again.")
+      }
+    } finally {
+      setIsUpdateLoader(false)
+    }
+  }
 
   useEffect(() => {
     if (sessionId) {
@@ -141,6 +180,29 @@ const InterviewPrep = () => {
                           isPinned={data?.isPinned}
                           onTogglePin={() => toggleQuestionPinStatus(data._id)}
                         />
+
+                        {!isLoading &&
+                          sessionData?.questions?.length === index + 1 && (
+                            <div className="flex justify-center mt-8">
+                              <button
+                                className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                disabled={isLoading || isUpdateLoader}
+                                onClick={uploadMoreQuestions}
+                              >
+                                {isUpdateLoader ? (
+                                  <>
+                                    <FaSpinner className="animate-spin" />
+                                    <span>Loading...</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <LuListCollapse />
+                                    <span>Load More</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                          )}
                       </>
                     </motion.div>
                   )
